@@ -4,7 +4,7 @@ from flask_cors import cross_origin
 from .utils import make_request_to_1c
 
 api = Blueprint('api', __name__)
-allowed_actions = ('send_sms', 'get_payment_requsits', 'get_all_info')
+allowed_actions = ('send_sms', 'get_payment_requsits', 'get_main_info', 'get_loan_info', 'get_ticket_info')
 
 
 @api.route('/ivr', methods=['GET', 'POST'])
@@ -27,7 +27,6 @@ def vicidial_handler(action):
         return jsonify(error='data not json')
     data['action'] = action
     if action in allowed_actions:
-        # send custom sms text
         print(data)
         response = make_request_to_1c('vicidial', data)
     else:
