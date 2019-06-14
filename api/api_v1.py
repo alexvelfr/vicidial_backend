@@ -6,7 +6,7 @@ from .utils import make_request_to_1c
 
 api = Blueprint('api', __name__)
 allowed_actions = ('send_sms', 'get_payment_requsits', 'get_main_info', 'get_loan_info', 'get_ticket_info',
-                   'get_detail_loan', 'get_detail_ticket', 'find_by_fio')
+                   'get_detail_loan', 'get_detail_ticket', 'find_by_fio', 'get_loans_by_phone')
 another_actions = ('get_lk_info',)
 
 
