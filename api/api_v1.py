@@ -38,7 +38,6 @@ def vicidial_handler(action):
 
     data['action'] = action
     if action in allowed_actions:
-        print(data)
         response = make_request_to_1c('vicidial', data)
     elif action in another_actions:
         gt_token = os.environ.get('AUTH_GETAWAY_TOKEN')
