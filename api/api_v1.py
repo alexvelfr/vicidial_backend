@@ -1,9 +1,12 @@
 import os
 import requests
+import logging
 from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 from .utils import make_request_to_1c
+from tasks import send_leads
 
+logger = logging.getLogger('vicidial')
 api = Blueprint('api', __name__)
 allowed_actions = ('send_sms', 'get_payment_requsits', 'get_main_info', 'get_loan_info', 'get_ticket_info',
                    'get_detail_loan', 'get_detail_ticket', 'find_by_fio', 'get_loans_by_phone', 'get_balance_on_date',
@@ -53,3 +56,11 @@ def vicidial_handler(action):
     else:
         response = {'error': 'method not allowed'}
     return jsonify(response)
+
+
+@api.route('/add_lead', methods=['POST'])
+@cross_origin()
+def add_lead():
+    data = request.get_json()
+    send_leads.delay(data)
+    return jsonify(status='ok')
