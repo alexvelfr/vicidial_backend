@@ -23,12 +23,7 @@ def _send_lead(lead):
     max_tries = 5
     dotenv.load_dotenv()
     url_for_load = os.environ.get('VICIDIAL_URL')
-    resource = '/vicidial/non_agent_api.php'
-    extended_data = {
-        'action': 'add_unique_lead',
-        'include_lists': lead.get('include_lists', ''),
-        'exclude_statuses': lead.get('exclude_statuses', ''),
-    }
+    resource = '/vicidial/non_agent_api.php'  # may will override later
     data = {
         'phone_number': lead.get('phone_number', ''),
         'list_id': lead.get('list_id', ''),
@@ -46,8 +41,19 @@ def _send_lead(lead):
         'function': 'add_lead',
     }
     if lead.get('include_lists', None):
-        data.update(extended_data)
+        data.update({
+            'action': 'add_unique_lead',
+            'include_lists': lead.get('include_lists', ''),
+            'exclude_statuses': lead.get('exclude_statuses', ''),
+        })
         resource = '/non_agent_api_ext/index.php'
+    if lead.get('callback', None):
+        data.update({
+            'callback': 'Y',
+            'callback_status': 'CALLBK',
+            'callback_datetime': lead.get('callback_datetime', ''),
+            'callback_comments': lead.get('callback_comments', ''),
+        })
     for i in range(max_tries):
         try:
             response = requests.get(url_for_load + resource, params=data, verify=False)
@@ -58,3 +64,12 @@ def _send_lead(lead):
                 sleep(1)
             else:
                 logger.error('Data add fail: ' + str(data))
+
+# phone_number=7275551111
+# campaign_id=TESTCAMP
+# callback=Y
+# callback_status=CALLBK
+# callback_datetime=NOW
+# callback_type=USERONLY
+# callback_user=6666
+# callback_comments=Comments+go+here

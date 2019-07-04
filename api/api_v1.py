@@ -21,10 +21,11 @@ def get_ivr_info():
     auth_key = request.headers.get('X-Auth-Key', '')
     if auth_key != os.environ.get('AUTH_KEY'):
         return jsonify(error='Not authenticated')
-    phone = request.args.get('phone')
+    phone = request.args.get('phone', '')
+    inn = request.args.get('inn', '')
     send_sms = bool(request.args.get('sendsms', False))
     if phone:
-        response = make_request_to_1c('ivr', {'phone': phone, 'send_sms': send_sms})
+        response = make_request_to_1c('ivr', {'phone': phone, 'inn': inn, 'send_sms': send_sms})
         return jsonify(response)
     return jsonify(error='phone is undefined')
 
@@ -62,5 +63,7 @@ def vicidial_handler(action):
 @cross_origin()
 def add_lead():
     data = request.get_json()
+    if type(data) != list:
+        data = [data, ]
     send_leads.delay(data)
     return jsonify(status='ok')
