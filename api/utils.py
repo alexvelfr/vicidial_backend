@@ -13,8 +13,11 @@ def make_request_to_1c(resourse, req):
         rt = requests.post(url, data=json.dumps(req, ensure_ascii=False).encode('utf-8'), headers=HEADERS,
                            verify=False).text
         if DEBUG:
+            print('====================REQUEST====================')
             print(req)
+            print('====================RESPONSE====================')
             print(rt)
+            print('====================END====================')
         rt = json.loads(rt, encoding='utf-8-sig')
     except:
         rt = {'error': 'connection error'}

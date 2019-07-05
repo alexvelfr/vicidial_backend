@@ -51,6 +51,7 @@ def _send_lead(lead):
         data.update({
             'callback': 'Y',
             'callback_status': 'CALLBK',
+            'campaign_id': 'outCC',
             'callback_datetime': lead.get('callback_datetime', ''),
             'callback_comments': lead.get('callback_comments', ''),
         })
@@ -64,12 +65,3 @@ def _send_lead(lead):
                 sleep(1)
             else:
                 logger.error('Data add fail: ' + str(data))
-
-# phone_number=7275551111
-# campaign_id=TESTCAMP
-# callback=Y
-# callback_status=CALLBK
-# callback_datetime=NOW
-# callback_type=USERONLY
-# callback_user=6666
-# callback_comments=Comments+go+here
