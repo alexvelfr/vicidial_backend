@@ -29,7 +29,7 @@ def get_ivr_info():
     if phone or inn:
         response = make_request_to_1c('ivr', {'phone': phone, 'inn': inn, 'send_sms': send_sms})
         return jsonify(response)
-    return jsonify(error='phone is undefined')
+    return jsonify(error='source undefined')
 
 
 @api.route('/vicidial/<action>', methods=['POST'])

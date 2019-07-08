@@ -1,3 +1,4 @@
+import logging
 import requests
 import json
 import os
@@ -19,6 +20,9 @@ def make_request_to_1c(resourse, req):
             print(rt)
             print('====================END====================')
         rt = json.loads(rt, encoding='utf-8-sig')
-    except:
+    except Exception as e:
+        if DEBUG:
+            logger = logging.getLogger('vicidial')
+            logger.error(str(e))
         rt = {'error': 'connection error'}
     return rt
