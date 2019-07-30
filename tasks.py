@@ -33,6 +33,8 @@ def _send_lead(lead):
         'province': lead.get('province', ''),
         'last_name': lead.get('last_name', ''),
         'postal_code': lead.get('postal_code', ''),
+        'city': lead.get('city', ''),
+        'email': lead.get('email', ''),
         'first_name': lead.get('first_name', ''),
         'phone_code': lead.get('phone_code', ''),
         'source': 'test',
@@ -52,7 +54,7 @@ def _send_lead(lead):
             'callback': 'Y',
             'callback_status': 'CALLBK',
             'campaign_id': 'outCC',
-            'callback_datetime': lead.get('callback_datetime', ''),
+            'callback_datetime': lead.get('callback_datetime', lead.get('security_phrase', '')),
             'callback_comments': lead.get('callback_comments', ''),
         })
     for i in range(max_tries):

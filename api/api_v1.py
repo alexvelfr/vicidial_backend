@@ -1,10 +1,13 @@
 import os
 import requests
 import logging
+import dotenv
 from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 from .utils import make_request_to_1c
 from tasks import send_leads
+
+dotenv.load_dotenv()
 
 logger = logging.getLogger('vicidial')
 api = Blueprint('api', __name__)
