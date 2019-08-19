@@ -22,6 +22,7 @@ def send_leads(leads):
 def _send_lead(lead):
     max_tries = 5
     dotenv.load_dotenv()
+    DEBUG = os.environ.get('ENABLE_LOG', '') == 'True'
     url_for_load = os.environ.get('VICIDIAL_URL')
     resource = '/vicidial/non_agent_api.php'  # may will override later
     data = {
@@ -59,10 +60,16 @@ def _send_lead(lead):
         })
     for i in range(max_tries):
         try:
+            if DEBUG:
+                logger.info(f'Try load {data.get("phone_number")}')
             response = requests.get(url_for_load + resource, params=data, verify=False)
+            if DEBUG:
+                logger.info(f'{data.get("phone_number")}: {response.status_code} - {response.reason}')
             if response.status_code == 200:
                 return
-        except:
+        except Exception as e:
+            if DEBUG:
+                logger.error(str(e))
             if i < max_tries - 1:
                 sleep(1)
             else:
