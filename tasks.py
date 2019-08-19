@@ -53,7 +53,7 @@ def _send_lead(lead):
         data.update({
             'callback': 'Y',
             'callback_status': 'CALLBK',
-            'campaign_id': 'outCC',
+            'campaign_id': 'ccMain',
             'callback_datetime': lead.get('callback_datetime', lead.get('security_phrase', '')),
             'callback_comments': lead.get('callback_comments', ''),
         })

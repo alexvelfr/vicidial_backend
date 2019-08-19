@@ -2,11 +2,13 @@ import os
 import requests
 import logging
 import dotenv
+import urllib3
 from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 from .utils import make_request_to_1c
 from tasks import send_leads
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 dotenv.load_dotenv()
 
 logger = logging.getLogger('vicidial')
