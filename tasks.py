@@ -41,6 +41,7 @@ def _send_lead(lead):
         'source': 'test',
         'user': os.environ.get('VICIDIAL_LOGIN'),
         'pass': os.environ.get('VICIDIAL_PASS'),
+        'gmt_offset_now': '3',
         'function': 'add_lead',
     }
     if lead.get('include_lists', None):
