@@ -31,6 +31,7 @@ def _send_lead(lead):
         'security_phrase': lead.get('security_phrase', ''),
         'address1': lead.get('address1', ''),
         'address2': lead.get('address2', ''),
+        'address3': lead.get('address3', ''),
         'province': lead.get('province', ''),
         'last_name': lead.get('last_name', ''),
         'postal_code': lead.get('postal_code', ''),
