@@ -25,6 +25,6 @@ def make_request_to_1c(resourse, req):
         rt = json.loads(rt, encoding='utf-8-sig')
     except Exception as e:
         logger = logging.getLogger('vicidial')
-        logger.error(str(e))
+        logger.error(f'1C error: {str(e)}')
         rt = {'error': 'connection error'}
     return rt
