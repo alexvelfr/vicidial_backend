@@ -16,19 +16,15 @@ def make_request_to_1c(resourse, req):
     try:
         res = requests.post(url, data=json.dumps(req, ensure_ascii=False).encode('utf-8'), headers=HEADERS,
                             verify=False)
-        try:
-            res_text = res.content.decode('utf-8-sig')
-        except:
-            res_text = res.content.decode('utf-8')
+        rt = res.json()
         if DEBUG:
             print('====================REQUEST====================')
             print(req)
             print('====================RESPONSE====================')
-            print(res_text)
+            print(res.text)
             print('====================END====================')
-        rt = json.loads(res_text)
     except Exception as e:
         logger = logging.getLogger('vicidial')
-        logger.error(f'1C error: {str(e)}')
+        logger.error(f'1C error: {str(e)} res: {res.text}')
         rt = {'error': 'connection error'}
     return rt
