@@ -14,15 +14,16 @@ DEBUG = os.environ.get('DEBUG', '') == 'True'
 def make_request_to_1c(resourse, req):
     url = BASE_URL_1C + resourse
     try:
-        rt = requests.post(url, data=json.dumps(req, ensure_ascii=False).encode('utf-8'), headers=HEADERS,
-                           verify=False).text
+        res = requests.post(url, data=json.dumps(req, ensure_ascii=False).encode('utf-8'), headers=HEADERS,
+                            verify=False)
+        res_text = res.content.decode('utf-8-sig')
         if DEBUG:
             print('====================REQUEST====================')
             print(req)
             print('====================RESPONSE====================')
-            print(rt)
+            print(res_text)
             print('====================END====================')
-        rt = json.loads(rt, encoding='utf-8-sig')
+        rt = json.loads(res_text)
     except Exception as e:
         logger = logging.getLogger('vicidial')
         logger.error(f'1C error: {str(e)}')
