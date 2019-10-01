@@ -16,7 +16,10 @@ def make_request_to_1c(resourse, req):
     try:
         res = requests.post(url, data=json.dumps(req, ensure_ascii=False).encode('utf-8'), headers=HEADERS,
                             verify=False)
-        res_text = res.content.decode('utf-8-sig')
+        try:
+            res_text = res.content.decode('utf-8-sig')
+        except:
+            res_text = res.content.decode('utf-8')
         if DEBUG:
             print('====================REQUEST====================')
             print(req)
