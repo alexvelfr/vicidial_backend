@@ -7,7 +7,8 @@ from celeryconfig import app_celery
 from billiard.pool import Pool
 
 fh = logging.FileHandler("vicidial.log")
-fh.setFormatter(logging.Formatter('[%(asctime)s: %(levelname)s] - %(message)s', '%Y-%m-%d %H:%M:%S'))
+fh.setFormatter(logging.Formatter(
+    '[%(asctime)s: %(levelname)s] - %(message)s', '%Y-%m-%d %H:%M:%S'))
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 logger.addHandler(fh)
@@ -42,11 +43,7 @@ def _send_lead(lead):
         'source': 'test',
         'user': os.environ.get('VICIDIAL_LOGIN'),
         'pass': os.environ.get('VICIDIAL_PASS'),
-<<<<<<< HEAD
-        'gmt_offset_now': '2',
-=======
         'gmt_offset_now': f'{-timezone/3600}',
->>>>>>> feat: add auto gmt offset
         'function': 'add_lead',
     }
     if lead.get('include_lists', None):
@@ -68,9 +65,11 @@ def _send_lead(lead):
         try:
             if DEBUG:
                 logger.info(f'Try load {data.get("phone_number")}')
-            response = requests.get(url_for_load + resource, params=data, verify=False)
+            response = requests.get(
+                url_for_load + resource, params=data, verify=False)
             if DEBUG:
-                logger.info(f'{data.get("phone_number")}: {response.status_code} - {response.reason}')
+                logger.info(
+                    f'{data.get("phone_number")}: {response.status_code} - {response.reason}')
             if response.status_code == 200:
                 return
         except Exception as e:
