@@ -2,7 +2,7 @@ import os
 import dotenv
 import requests
 import logging
-from time import sleep, timezone
+from time import sleep, altzone
 from celeryconfig import app_celery
 from billiard.pool import Pool
 
@@ -43,7 +43,7 @@ def _send_lead(lead):
         'source': 'test',
         'user': os.environ.get('VICIDIAL_LOGIN'),
         'pass': os.environ.get('VICIDIAL_PASS'),
-        'gmt_offset_now': f'{round(-timezone/3600)}',
+        'gmt_offset_now': f'{round(-altzone/3600)}',
         'function': 'add_lead',
     }
     if lead.get('include_lists', None):
