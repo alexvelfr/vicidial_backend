@@ -4,7 +4,6 @@ import requests
 import logging
 from time import sleep, altzone
 from celeryconfig import app_celery
-from billiard.pool import Pool
 
 fh = logging.FileHandler("vicidial.log")
 fh.setFormatter(logging.Formatter(
@@ -16,8 +15,8 @@ logger.addHandler(fh)
 
 @app_celery.task(name='add_lead')
 def send_leads(leads):
-    with Pool(10) as p:
-        p.map(_send_lead, leads)
+    for lead in leads:
+        _send_lead(lead)
 
 
 def _send_lead(lead):
