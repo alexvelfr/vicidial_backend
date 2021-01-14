@@ -13,6 +13,23 @@ logger.setLevel(logging.INFO)
 logger.addHandler(fh)
 
 
+@app_celery.task(name='update_lead')
+def update_lead(lead):
+    dotenv.load_dotenv()
+    url_for_load = os.environ.get('VICIDIAL_URL')
+    resource = "/vicidial/non_agent_api.php"
+    lead.pop('type')
+    lead['function'] = 'update_lead'
+    lead['user'] = os.environ.get('VICIDIAL_LOGIN')
+    lead['pass'] = os.environ.get('VICIDIAL_PASS')
+    lead['source'] = 'test'
+
+    requests.get(
+        url_for_load + resource,
+        params=lead,
+        verify=False)
+
+
 @app_celery.task(name='add_lead')
 def send_leads(leads):
     for lead in leads:
@@ -65,7 +82,9 @@ def _send_lead(lead):
             if DEBUG:
                 logger.info(f'Try load {data.get("phone_number")}')
             response = requests.get(
-                url_for_load + resource, params=data, verify=False)
+                url_for_load + resource,
+                params=data,
+                verify=False)
             if DEBUG:
                 logger.info(
                     f'{data.get("phone_number")}: {response.status_code} - {response.reason}')

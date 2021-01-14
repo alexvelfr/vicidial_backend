@@ -6,15 +6,17 @@ import urllib3
 from flask import Blueprint, request, jsonify
 from flask_cors import cross_origin
 from .utils import make_request_to_1c
-from tasks import send_leads
+from tasks import send_leads, update_lead
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 dotenv.load_dotenv()
 
 logger = logging.getLogger('vicidial')
 api = Blueprint('api', __name__)
-allowed_actions = ('send_sms', 'get_payment_requsits', 'get_main_info', 'get_loan_info', 'get_ticket_info',
-                   'get_detail_loan', 'get_detail_ticket', 'find_by_fio', 'get_loans_by_phone', 'get_balance_on_date',
+allowed_actions = ('send_sms', 'get_payment_requsits', 'get_main_info',
+                   'get_loan_info', 'get_ticket_info',
+                   'get_detail_loan', 'get_detail_ticket', 'find_by_fio',
+                   'get_loans_by_phone', 'get_balance_on_date',
                    'get_phones_from_order')
 
 another_actions = ('get_lk_info',)
@@ -22,7 +24,7 @@ another_actions = ('get_lk_info',)
 
 @api.route('/ivr', methods=['GET', 'POST'])
 @cross_origin()
-def get_ivr_info():
+def get_ivr_info_view():
     auth_key = request.headers.get('X-Auth-Key', '')
     if auth_key != os.environ.get('AUTH_KEY'):
         return jsonify(error='Not authenticated')
@@ -32,21 +34,22 @@ def get_ivr_info():
     inn = source.get('inn', '')
     send_sms = bool(source.get('sendsms', False))
     if phone or inn:
-        response = make_request_to_1c('ivr', {'phone': phone, 'inn': inn, 'send_sms': send_sms})
+        response = make_request_to_1c(
+            'ivr', {'phone': phone, 'inn': inn, 'send_sms': send_sms})
         return jsonify(response)
     return jsonify(error='source undefined')
 
 
 @api.route('/vicidial/<action>', methods=['POST'])
 @cross_origin()
-def vicidial_handler(action):
+def vicidial_handler_view(action):
     auth_key = request.headers.get('X-Auth-Key', '')
     if auth_key != os.environ.get('AUTH_KEY'):
         return jsonify(error='Not authenticated')
 
     try:
         data = request.get_json()
-    except:
+    except Exception:
         return jsonify(error='data not json')
 
     data['action'] = action
@@ -60,7 +63,8 @@ def vicidial_handler(action):
             'inn': data.get('inn', ''),
             'phone': data.get('phone', ''),
         }
-        response = requests.post(gt_url, json=data, headers={'token': gt_token}, verify=False).json()
+        response = requests.post(gt_url, json=data, headers={
+                                 'token': gt_token}, verify=False).json()
     else:
         response = {'error': 'method not allowed'}
     return jsonify(response)
@@ -68,9 +72,17 @@ def vicidial_handler(action):
 
 @api.route('/add_lead', methods=['POST'])
 @cross_origin()
-def add_lead():
+def add_lead_view():
     data = request.get_json()
     if type(data) != list:
         data = [data, ]
     send_leads.delay(data)
+    return jsonify(status='ok')
+
+
+@api.route('/update_lead', methods=['POST'])
+@cross_origin()
+def update_lead_view():
+    data = request.get_json()
+    update_lead.delay(data)
     return jsonify(status='ok')
